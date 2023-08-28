@@ -3,9 +3,8 @@ import Image from 'next/image'
 
 export default function Home() {
   return (
-    <main className="overflow-hidden">
-     
-     
+    <main>
+     <div>Hola, esta web estara disponible proximamente</div>
     </main>
   )
 }
