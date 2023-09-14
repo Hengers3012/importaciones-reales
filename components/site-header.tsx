@@ -24,7 +24,7 @@ export function SiteHeader() {
 						name="search"
 						type="search"
 						autoComplete="off"
-						placeholder="Search products..."
+						placeholder="Buscar Productos..."
 						className="h-9 lg:w-[300px]"
 					/>
 				</form>
@@ -33,7 +33,7 @@ export function SiteHeader() {
 						<Button size="sm" variant="ghost">
 							<ShoppingBag className="h-5 w-5" />
 							<span className="ml-2 text-sm font-bold">0</span>
-							<span className="sr-only">Cart</span>
+							<span className="sr-only">Carrito</span>
 						</Button>
 					</Link>
 					<ThemeToggle />
