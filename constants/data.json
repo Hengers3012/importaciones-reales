@@ -1,0 +1,96 @@
+{
+    "categorias": [
+      {
+        "nombre": "Electrodomésticos",
+        "productos": [
+          {
+            "nombre": "Lavadora",
+            "precio": 499.99,
+            "descripcion": "Lavadora de carga frontal de 7 kg con funciones de lavado rápido y ahorro de energía.",
+            "imagen": "lavadora.jpg",
+            "marca": "EcoWash",
+            "modelo": "Eco123",
+            "disponibilidad": true,
+            "capacidad": "7 kg",
+            "dimensiones": "60x85x60 cm",
+            "color": "Blanco",
+            "voltaje": "120V",
+            "clase_energetica": "Clase A+"
+          },
+          {
+            "nombre": "Refrigerador",
+            "precio": 599.99,
+            "descripcion": "Refrigerador de acero inoxidable de 18 pies cúbicos con dispensador de agua y hielo.",
+            "imagen": "refrigerador.jpg",
+            "marca": "CoolTech",
+            "modelo": "CoolFridge",
+            "disponibilidad": true,
+            "capacidad": "18 pies cúbicos",
+            "dimensiones": "70x180x80 cm",
+            "color": "Acero inoxidable",
+            "voltaje": "120V",
+            "clase_energetica": "Clase A"
+          }
+        ]
+      },
+      {
+        "nombre": "Muebles",
+        "productos": [
+          {
+            "nombre": "Sofá",
+            "precio": 299.99,
+            "descripcion": "Sofá de tres plazas con tapizado de tela de alta calidad y cojines rellenos de espuma.",
+            "imagen": "sofa.jpg",
+            "marca": "ComfortLiving",
+            "modelo": "ComfySofa",
+            "disponibilidad": true,
+            "material": "Tela",
+            "dimensiones": "200x90x80 cm",
+            "color": "Gris",
+            "estilo": "Contemporáneo"
+          },
+          {
+            "nombre": "Mesa de Comedor",
+            "precio": 199.99,
+            "descripcion": "Mesa de comedor de madera maciza con capacidad para seis personas.",
+            "imagen": "mesa_comedor.jpg",
+            "marca": "WoodCraft",
+            "modelo": "WoodenTable",
+            "disponibilidad": true,
+            "material": "Madera maciza",
+            "dimensiones": "160x75x90 cm",
+            "color": "Marrón",
+            "estilo": "Rústico"
+          }
+        ]
+      },
+      {
+        "nombre": "Decoración",
+        "productos": [
+          {
+            "nombre": "Cuadro Abstracto",
+            "precio": 49.99,
+            "descripcion": "Cuadro decorativo abstracto con marco de aluminio.",
+            "imagen": "cuadro.jpg",
+            "artista": "Ana López",
+            "dimensiones": "80x60 cm",
+            "color": "Multicolor",
+            "material_marco": "Aluminio",
+            "estilo": "Abstracto"
+          },
+          {
+            "nombre": "Lámpara de Pie",
+            "precio": 79.99,
+            "descripcion": "Lámpara de pie moderna con pantalla de tela y regulador de intensidad de luz.",
+            "imagen": "lampara.jpg",
+            "marca": "LightUp",
+            "modelo": "ModernLamp",
+            "dimensiones": "160x30x30 cm",
+            "color": "Negro",
+            "tipo_de_bombilla": "LED",
+            "potencia_maxima": "20W"
+          }
+        ]
+      }
+    ]
+  }
