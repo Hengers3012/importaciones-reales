@@ -1,7 +1,8 @@
 "use client";
 
 import { Image } from "sanity";
-import { FormEvent } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface InventoryProduct {
 	id: string;
@@ -24,20 +25,12 @@ export interface SanityProduct extends Omit<InventoryProduct, "images"> {
 	images: Image[];
 }
 
-async function createProduct(event: FormEvent<HTMLFormElement>) {
-	event.preventDefault();
-
-	const data = new FormData(event.currentTarget);
-
-	console.log(data);
-}
-
 export default function InventoryAddPage() {
 	return (
 		<main className="overflow-hidden w-full mt-2 text-center ">
 			<h1 className="text-6xl">Crea un Producto!</h1>
 			<form
-				onSubmit={createProduct}
+				onSubmit={handleSubmit(createProduct)}
 				className="mt-6 flex flex-col items-start mx-auto rounded-2xl p-4 space-y-6 w-1/3 border"
 			>
 				<label className="w-full flex">
@@ -127,7 +120,12 @@ export default function InventoryAddPage() {
 						placeholder="Separar por coma ..."
 					/>
 				</label>
-				<button type="submit">Submit</button>
+				<button
+					type="submit"
+					className="bg-blue-500 py-1 px-4 rounded-2xl mx-auto"
+				>
+					Submit
+				</button>
 			</form>
 		</main>
 	);
