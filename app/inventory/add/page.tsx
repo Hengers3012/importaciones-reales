@@ -1,17 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-// import { Image } from "sanity";
 import { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import addProduct from "@/sanity/lib/addProduct";
+import { client } from "@/sanity/lib/client";
+import { SanityAssetDocument } from "next-sanity";
+import uploadProduct from "@/sanity/lib/uploadProduct";
 
-interface InventoryProduct {
-	id: string;
+export interface InventoryProduct {
+	_id: string;
 	name: string;
-	image: string;
-	images: string[];
 	categories: string[];
 	sizes: string[];
 	colors: string[];
@@ -19,42 +18,29 @@ interface InventoryProduct {
 	currency: string;
 	description: string;
 	sku: string;
-}
-
-interface ImageFile {
-	file: File;
-	url: string;
-}
-
-export interface SanityProduct extends Omit<InventoryProduct, "images"> {
-	_id: string;
-	_createdAt: Date;
-	slug: string;
-	// images: Image[];
+	images: SanityAssetDocument[];
 }
 
 export default function InventoryAddPage() {
 	//const [createProduct, setCreateProduct] = useState<InventoryProduct>();
-	const [formData, setFormData] = useState<InventoryProduct>({
-		id: "",
+	const [productDetails, setProductDetails] = useState<InventoryProduct>({
+		_id: "",
 		name: "",
-		image: "",
-		images: [],
 		categories: [],
 		sizes: [],
 		colors: [],
 		price: 0,
-		currency: "",
+		currency: "USD",
 		description: "",
 		sku: "",
+		images: [],
 	});
 
 	const [imgDelButton, setImgDelButton] = useState(false);
-	const [imageAssets, setImageAssets] = useState<ImageFile[]>([]);
 
 	useEffect(() => {
-		console.log(imageAssets);
-	}, [imageAssets]);
+		console.log(productDetails);
+	}, [productDetails]);
 
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		event.preventDefault();
@@ -62,21 +48,32 @@ export default function InventoryAddPage() {
 		if (!event.target.files) return;
 
 		Array.from(event.target.files).forEach((file) => {
-			setImageAssets((imageAssets) => [
-				...imageAssets,
-				{ file: file, url: URL.createObjectURL(file) },
-			]);
+			client.assets
+				.upload("image", file, {
+					contentType: file.type,
+					filename: file.name,
+				})
+				.then((document) => {
+					setProductDetails((productDetails) => {
+						return {
+							...productDetails,
+							images: [...productDetails.images, document],
+						};
+					});
+				})
+				.catch((error) => {
+					console.log("Upload failed:", error.message);
+				})
+				.then(() => {
+					console.log("Images uploaded!");
+				});
 		});
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		const jsonData = JSON.stringify(formData);
-
-		await addProduct(jsonData);
-
-		console.log(jsonData);
+		await uploadProduct(productDetails);
 	};
 
 	return (
@@ -93,9 +90,12 @@ export default function InventoryAddPage() {
 						name="id"
 						className="ml-2 px-1 text-center text-black w-full rounded-lg"
 						placeholder="Identificador ..."
-						value={formData.id}
+						value={productDetails._id}
 						onChange={(e) =>
-							setFormData({ ...formData, id: e.target.value })
+							setProductDetails({
+								...productDetails,
+								_id: e.target.value,
+							})
 						}
 					/>
 				</label>
@@ -106,9 +106,12 @@ export default function InventoryAddPage() {
 						name="name"
 						className="ml-2 px-1 text-center text-black w-full rounded-lg"
 						placeholder="Nombre ..."
-						value={formData.name}
+						value={productDetails.name}
 						onChange={(e) => {
-							setFormData({ ...formData, name: e.target.value });
+							setProductDetails({
+								...productDetails,
+								name: e.target.value,
+							});
 						}}
 					/>
 				</label>
@@ -119,9 +122,12 @@ export default function InventoryAddPage() {
 						name="sku"
 						className="ml-2 px-1 text-center text-black w-full rounded-lg"
 						placeholder="Código SKU ..."
-						value={formData.sku}
+						value={productDetails.sku}
 						onChange={(e) => {
-							setFormData({ ...formData, sku: e.target.value });
+							setProductDetails({
+								...productDetails,
+								sku: e.target.value,
+							});
 						}}
 					/>
 				</label>
@@ -132,10 +138,10 @@ export default function InventoryAddPage() {
 						name="description"
 						className="ml-2 px-1 text-center text-black w-full rounded-lg"
 						placeholder="Breve descripción ..."
-						value={formData.description}
+						value={productDetails.description}
 						onChange={(e) => {
-							setFormData({
-								...formData,
+							setProductDetails({
+								...productDetails,
 								description: e.target.value,
 							});
 						}}
@@ -149,10 +155,10 @@ export default function InventoryAddPage() {
 							name="price"
 							className="ml-2 mr-6 px-1 text-center text-black w-full rounded-lg"
 							placeholder="Costo ..."
-							value={formData.price}
+							value={productDetails.price}
 							onChange={(e) => {
-								setFormData({
-									...formData,
+								setProductDetails({
+									...productDetails,
 									price: Number(e.target.value),
 								});
 							}}
@@ -163,10 +169,10 @@ export default function InventoryAddPage() {
 						<select
 							className="ml-2 px-1 text-center text-black w-full rounded-lg"
 							name="currency"
-							value={formData.currency}
+							value={productDetails.currency}
 							onChange={(e) => {
-								setFormData({
-									...formData,
+								setProductDetails({
+									...productDetails,
 									currency: e.target.value,
 								});
 							}}
@@ -186,10 +192,10 @@ export default function InventoryAddPage() {
 						name="sizes"
 						className="ml-2 px-1 text-center text-black w-full rounded-lg"
 						placeholder="Separar por coma ..."
-						value={formData.sizes}
+						value={productDetails.sizes}
 						onChange={(e) => {
-							setFormData({
-								...formData,
+							setProductDetails({
+								...productDetails,
 								sizes: e.target.value.split(","),
 							});
 						}}
@@ -202,10 +208,10 @@ export default function InventoryAddPage() {
 						name="categories"
 						className="ml-2 px-1 text-center text-black w-full rounded-lg"
 						placeholder="Separar por coma ..."
-						value={formData.categories}
+						value={productDetails.categories}
 						onChange={(e) => {
-							setFormData({
-								...formData,
+							setProductDetails({
+								...productDetails,
 								categories: e.target.value.split(","),
 							});
 						}}
@@ -218,10 +224,10 @@ export default function InventoryAddPage() {
 						name="colors"
 						className="ml-2 px-1 text-center text-black w-full rounded-lg"
 						placeholder="Separar por coma ..."
-						value={formData.colors}
+						value={productDetails.colors}
 						onChange={(e) => {
-							setFormData({
-								...formData,
+							setProductDetails({
+								...productDetails,
 								colors: e.target.value.split(","),
 							});
 						}}
@@ -231,10 +237,10 @@ export default function InventoryAddPage() {
 				<div className="input-wrapper flex flex-col border rounded p-2 mx-auto w-full">
 					<label className="mb-1">Imagen:</label>
 
-					{imageAssets && (
+					{productDetails.images && (
 						<div className="image-preview m-4">
 							<Carousel>
-								{imageAssets.map((image, index) => (
+								{productDetails.images.map((image, index) => (
 									<div
 										key={index}
 										className="relative"
@@ -268,11 +274,17 @@ export default function InventoryAddPage() {
 											}}
 											onChange={handleImageChange}
 											onClick={() => {
-												setImageAssets(
-													imageAssets.filter(
+												// setImageAssets(
+												// 	imageAssets.filter(
+												// 		(img, i) => i !== index
+												// 	)
+												// );
+												setProductDetails({
+													...productDetails,
+													images: productDetails.images.filter(
 														(img, i) => i !== index
-													)
-												);
+													),
+												});
 											}}
 										/>
 										<img
