@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import uploadProduct from "@/sanity/lib/uploadProduct";
+import Swal from "sweetalert2";
 
 interface ImageFile {
 	file: File;
@@ -63,7 +64,36 @@ export default function InventoryAddPage() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		await uploadProduct(productDetails);
+		Swal.fire({
+			title: "",
+			text: "Please wait...",
+			showConfirmButton: false,
+			color: "dark",
+		});
+
+		await uploadProduct(productDetails)
+			.then(() => {
+				setProductDetails({
+					_id: "",
+					name: "",
+					categories: [],
+					sizes: [],
+					colors: [],
+					price: 0,
+					currency: "",
+					description: "",
+					sku: "",
+					images: [],
+				});
+			})
+			.then(() => {
+				Swal.close();
+				Swal.fire({
+					title: "",
+					text: "Product created successfully!",
+					showConfirmButton: true,
+				});
+			});
 	};
 
 	return (
