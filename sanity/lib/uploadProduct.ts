@@ -2,9 +2,7 @@ import { InventoryProduct } from "@/app/inventory/add/page";
 import { client } from "@/sanity/lib/client";
 
 export default async function uploadProduct(product: InventoryProduct) {
-	console.log("uploading product", product);
-
-	const temp = {
+	const details = {
 		_id: product._id,
 		name: product.name,
 		categories: product.categories,
@@ -16,37 +14,45 @@ export default async function uploadProduct(product: InventoryProduct) {
 		sku: product.sku,
 	};
 
-	// const productJSON = JSON.stringify(temp);
-
-	console.log("creating product...");
+	console.log(`Creating product - ${details.name}...`);
 
 	await client
 		.create({
 			_type: "product",
-			...temp,
+			...details,
 		})
-		.catch((err) => {
-			console.error(err);
+		.catch((error) => {
+			console.log("cannot create product:", error.message);
 		})
 		.then(() => {
 			console.log("uploading images...");
-		})
-		.then(() => {
 			product.images.forEach((image) => {
-				client
-					.patch(product._id)
-					.setIfMissing({ images: [] })
-					// Add the items after the last item in the array (append)
-					.insert("after", "images[-1]", [
-						{
-							_type: "image",
-							asset: {
-								_type: "reference",
-								_ref: image._id,
-							},
-						},
-					])
-					.commit({ autoGenerateArrayKeys: true });
+				client.assets
+					.upload("image", image.file, {
+						contentType: image.file.type,
+						filename: image.file.name,
+					})
+					.then((asset) => {
+						client
+							.patch(product._id)
+							.setIfMissing({ images: [] })
+							.insert("after", "images[-1]", [
+								{
+									_type: "image",
+									asset: {
+										_type: "reference",
+										_ref: asset._id,
+									},
+								},
+							])
+							.commit({ autoGenerateArrayKeys: true });
+					})
+					.catch((error) => {
+						console.log("cannot upload images:", error.message);
+					})
+					.then(() => {
+						console.log("images uploaded!");
+					});
 			});
 		})
 		.then(() => {

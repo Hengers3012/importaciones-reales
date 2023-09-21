@@ -4,9 +4,12 @@
 import { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { client } from "@/sanity/lib/client";
-import { SanityAssetDocument } from "next-sanity";
 import uploadProduct from "@/sanity/lib/uploadProduct";
+
+interface ImageFile {
+	file: File;
+	url: string;
+}
 
 export interface InventoryProduct {
 	_id: string;
@@ -18,11 +21,10 @@ export interface InventoryProduct {
 	currency: string;
 	description: string;
 	sku: string;
-	images: SanityAssetDocument[];
+	images: ImageFile[];
 }
 
 export default function InventoryAddPage() {
-	//const [createProduct, setCreateProduct] = useState<InventoryProduct>();
 	const [productDetails, setProductDetails] = useState<InventoryProduct>({
 		_id: "",
 		name: "",
@@ -30,7 +32,7 @@ export default function InventoryAddPage() {
 		sizes: [],
 		colors: [],
 		price: 0,
-		currency: "USD",
+		currency: "",
 		description: "",
 		sku: "",
 		images: [],
@@ -48,25 +50,13 @@ export default function InventoryAddPage() {
 		if (!event.target.files) return;
 
 		Array.from(event.target.files).forEach((file) => {
-			client.assets
-				.upload("image", file, {
-					contentType: file.type,
-					filename: file.name,
-				})
-				.then((document) => {
-					setProductDetails((productDetails) => {
-						return {
-							...productDetails,
-							images: [...productDetails.images, document],
-						};
-					});
-				})
-				.catch((error) => {
-					console.log("Upload failed:", error.message);
-				})
-				.then(() => {
-					console.log("Images uploaded!");
-				});
+			setProductDetails({
+				...productDetails,
+				images: [
+					...productDetails.images,
+					{ file, url: URL.createObjectURL(file) },
+				],
+			});
 		});
 	};
 
@@ -81,7 +71,7 @@ export default function InventoryAddPage() {
 			<h1 className="text-6xl">Crea un Producto!</h1>
 			<form
 				onSubmit={handleSubmit}
-				className="mt-6 flex flex-col items-start mx-auto rounded-2xl p-4 space-y-6 w-1/3 border"
+				className="mt-6 flex flex-col items-start mx-auto rounded-2xl p-4 space-y-6 w-[50%] border"
 			>
 				<label className="w-full flex">
 					Id:
@@ -169,7 +159,11 @@ export default function InventoryAddPage() {
 						<select
 							className="ml-2 px-1 text-center text-black w-full rounded-lg"
 							name="currency"
-							value={productDetails.currency}
+							value={
+								productDetails.currency !== ""
+									? productDetails.currency
+									: ""
+							}
 							onChange={(e) => {
 								setProductDetails({
 									...productDetails,
@@ -177,10 +171,11 @@ export default function InventoryAddPage() {
 								});
 							}}
 						>
-							<option value="DOP" defaultChecked>
-								USD
+							<option value="" disabled hidden>
+								Seleccionar...
 							</option>
-							<option value="USD">DOP</option>
+							<option value="DOP">DOP</option>
+							<option value="USD">USD</option>
 							<option value="EUR">EUR</option>
 						</select>
 					</label>
@@ -274,11 +269,6 @@ export default function InventoryAddPage() {
 											}}
 											onChange={handleImageChange}
 											onClick={() => {
-												// setImageAssets(
-												// 	imageAssets.filter(
-												// 		(img, i) => i !== index
-												// 	)
-												// );
 												setProductDetails({
 													...productDetails,
 													images: productDetails.images.filter(
@@ -306,7 +296,7 @@ export default function InventoryAddPage() {
 								onChange={handleImageChange}
 								className="hidden"
 								id="imageUrl"
-								multiple // Asegúrate de que está habilitado el modo de selección múltiple
+								multiple
 							/>
 							<label
 								htmlFor="imageUrl"
