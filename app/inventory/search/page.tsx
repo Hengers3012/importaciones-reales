@@ -29,13 +29,15 @@ export default function InventorySearchPage() {
 				placeholder="Buscar..."
 				onChange={async (e) => {
 					setSearch(e.target.value);
-					await client
-						.fetch(
-							`*[_type == "product" && name match "${e.target.value}*"]`
-						)
-						.then((data) => {
-							setProducts(data);
-						});
+					e.target.value !== ""
+						? await client
+								.fetch(
+									`*[_type == "product" && name match "${e.target.value}*"]`
+								)
+								.then((data) => {
+									setProducts(data);
+								})
+						: setProducts([]);
 				}}
 			/>
 			<div className="h-full w-full flex justify-evenly">
