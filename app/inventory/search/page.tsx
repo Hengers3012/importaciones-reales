@@ -3,7 +3,6 @@
 import { client } from "@/sanity/lib/client";
 import { useEffect, useState } from "react";
 import { InventoryProduct } from "@/lib/interfaces";
-import { product } from "@/sanity/schemas/product";
 
 export default function InventorySearchPage() {
 	const [search, setSearch] = useState("");
