@@ -6,6 +6,8 @@ import { siteConfig } from "@/config/site";
 import { Inter } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 
+import ThemeProvider from "./provider";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -22,13 +24,17 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<>
-			<html lang="en" suppressHydrationWarning>
-				<body className={inter.className}>
+		<html lang="en" suppressHydrationWarning>
+			<body className={inter.className}>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+				>
 					<SiteHeader />
 					{children}
-				</body>
-			</html>
-		</>
+				</ThemeProvider>
+			</body>
+		</html>
 	);
 }
