@@ -75,15 +75,20 @@ export function SiteHeader() {
 					>
 						  Sign In
 					</a>
-					<button className="font-medium tracking-wide py-2 px-5 sm:px-8 border border-orange-500 text-orange-500 bg-white-500 outline-none rounded-l-full rounded-r-full capitalize hover:bg-orange-500 hover:text-white-500 transition-all hover:shadow-orange ">
+					<Button
+						size="md"
+						variant="default"
+						rounded="max"
+						bgColor="orange"
+					>
 						{" "}
 						Sign Up
-					</button>
+					</Button>
 				</div>
 
 				<div className="flex items-center space-x-1">
 					<a href="/cart">
-						<Button size="sm" variant="ghost">
+						<Button size="sm" variant="clear">
 							<ShoppingBag className="h-5 w-5" />
 							<span className="ml-2 text-sm font-bold">0</span>
 							<span className="sr-only">Carrito</span>
@@ -92,7 +97,7 @@ export function SiteHeader() {
 					<ThemeToggle />
 					{process.env.NODE_ENV === "development" && (
 						<a href={"/sanity-studio"}>
-							<Button size="sm" variant="ghost">
+							<Button size="sm" variant="clear">
 								<Edit className="h-5 w-5" />
 							</Button>
 						</a>
