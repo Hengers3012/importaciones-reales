@@ -10,6 +10,7 @@ export function ThemeToggle() {
 
 	return (
 		<Button
+			className="dark:text-white text-black"
 			variant="clear"
 			size="sm"
 			onClick={() => setTheme(theme === "light" ? "dark" : "light")}

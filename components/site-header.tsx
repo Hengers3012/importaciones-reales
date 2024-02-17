@@ -2,11 +2,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
+import { useTheme } from "next-themes";
+
 import { usePathname } from "next/navigation";
 import { Edit, ShoppingBag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { NavLogo } from "@/components/nav-logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -16,6 +17,9 @@ export function SiteHeader() {
 	const [activeLink, setActiveLink] = useState("main");
 
 	if (pathname.startsWith("/sanity-studio")) return null;
+
+	// eslint-disable-next-line react-hooks/rules-of-hooks
+	const { setTheme, theme } = useTheme();
 
 	return (
 		<header className="relative top-0 w-full  z-30 bg-white-500 transition-all pt-4">
@@ -89,7 +93,10 @@ export function SiteHeader() {
 				<div className="flex items-center space-x-1">
 					<a href="/cart">
 						<Button size="sm" variant="clear">
-							<ShoppingBag className="h-5 w-5" />
+							<ShoppingBag
+								className="h-5 w-5"
+								color={theme === "dark" ? "white" : "black"}
+							/>
 							<span className="ml-2 text-sm font-bold">0</span>
 							<span className="sr-only">Carrito</span>
 						</Button>
@@ -98,7 +105,7 @@ export function SiteHeader() {
 					{process.env.NODE_ENV === "development" && (
 						<a href={"/sanity-studio"}>
 							<Button size="sm" variant="clear">
-								<Edit className="h-5 w-5" />
+								<Edit className="h-5 w-5 dark:text-white text-black" />
 							</Button>
 						</a>
 					)}
