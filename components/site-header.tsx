@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
@@ -18,7 +19,6 @@ export function SiteHeader() {
 
 	if (pathname.startsWith("/sanity-studio")) return null;
 
-	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const { setTheme, theme } = useTheme();
 
 	return (
@@ -103,7 +103,7 @@ export function SiteHeader() {
 					</a>
 					<ThemeToggle />
 					{process.env.NODE_ENV === "development" && (
-						<a href={"/sanity-studio"}>
+						<a href={"/sanity-studio"} target="_blank">
 							<Button size="sm" variant="clear">
 								<Edit className="h-5 w-5 dark:text-white text-black" />
 							</Button>
